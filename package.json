@@ -1,0 +1,22 @@
+{
+  "name": "document-services-exercises",
+  "version": "1.0.0",
+  "description": "A set of exercises related to [Adobe Document Services](https://developer.adobe.com/document-services/homepage/). These are all  Node.js based exercises and require credentials.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfjedimaster/document-services-exercises.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cfjedimaster/document-services-exercises/issues"
+  },
+  "homepage": "https://github.com/cfjedimaster/document-services-exercises#readme",
+  "dependencies": {
+    "@adobe/pdfservices-node-sdk": "^2.2.3"
+  }
+}
