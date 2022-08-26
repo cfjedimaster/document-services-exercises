@@ -11,8 +11,8 @@ const fs = require('fs');
 /*
 Defines our input and output, these would be dynamic normally...
 */
-const input = './pdfs/pdf_that_needs_ocr.pdf';
-const output = './pdfs/pdf_that_is_ocr.pdf';
+const input = './pdfs/adobe-developer-terms.pdf';
+const output = './pdfs/adobe-developer-terms-protected.pdf';
 
 /*
 ensure it actually exist...
@@ -40,19 +40,39 @@ const credentials =  pdfSDK.Credentials
 /*
 define top level objects for our work
 */
-const executionContext = pdfSDK.ExecutionContext.create(credentials),
-	ocrOperation = pdfSDK.OCR.Operation.createNew();
+const executionContext = pdfSDK.ExecutionContext.create(credentials);
+const protectPDF = pdfSDK.ProtectPDF;
+const protectPDFOptions = protectPDF.options;
+const permissions = protectPDFOptions.Permissions.createNew();
+
+/*
+one or more permissions
+*/
+permissions.addPermission(protectPDFOptions.Permission.PRINT_HIGH_QUALITY);
+permissions.addPermission(protectPDFOptions.Permission.PRINT_LOW_QUALITY);
+
+
+
+
+const options = new protectPDFOptions.PasswordProtectOptions.Builder()
+		.setOwnerPassword('password')
+		.setPermissions(permissions)
+		.setEncryptionAlgorithm(protectPDFOptions.EncryptionAlgorithm.AES_256)
+		.setContentEncryption(protectPDFOptions.ContentEncryption.ALL_CONTENT_EXCEPT_METADATA)
+		.build();
+
+const protectPDFOperation = protectPDF.Operation.createNew(options);
 
 /*
 tell the operation object where our input is
 */
 const inputPDF = pdfSDK.FileRef.createFromLocalFile(input);
-ocrOperation.setInput(inputPDF);
+protectPDFOperation.setInput(inputPDF);
 
 /*
 now do it!
 */
-ocrOperation.execute(executionContext)
+protectPDFOperation.execute(executionContext)
 .then(result => result.saveAsFile(output))
 .catch(err => {
 	if(err instanceof pdfSDK.Error.ServiceApiError
