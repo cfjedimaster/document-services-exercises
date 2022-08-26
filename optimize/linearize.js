@@ -11,8 +11,8 @@ const fs = require('fs');
 /*
 Defines our input and output, these would be dynamic normally...
 */
-const input = './pdfs/pdf_that_needs_ocr.pdf';
-const output = './pdfs/pdf_that_is_ocr.pdf';
+const input = './pdfs/compressed.pdf';
+const output = './pdfs/linearized.pdf';
 
 /*
 ensure it actually exist...
@@ -41,18 +41,18 @@ const credentials =  pdfSDK.Credentials
 define top level objects for our work
 */
 const executionContext = pdfSDK.ExecutionContext.create(credentials),
-	ocrOperation = pdfSDK.OCR.Operation.createNew();
+	linearizeOperation = pdfSDK.LinearizePDF.Operation.createNew();
 
 /*
 tell the operation object where our input is
 */
 const inputPDF = pdfSDK.FileRef.createFromLocalFile(input);
-ocrOperation.setInput(inputPDF);
+linearizeOperation.setInput(inputPDF);
 
 /*
 now do it!
 */
-ocrOperation.execute(executionContext)
+linearizeOperation.execute(executionContext)
 .then(result => result.saveAsFile(output))
 .catch(err => {
 	if(err instanceof pdfSDK.Error.ServiceApiError
