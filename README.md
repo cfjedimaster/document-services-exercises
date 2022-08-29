@@ -7,4 +7,4 @@ Code is assumed to be run from this directory, so for example, `node optimize/oc
 
 ## Optimize
 
-Exercices related to optimization functions for documents.
+Exercises related to optimization functions for documents.

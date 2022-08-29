@@ -3,16 +3,19 @@ Required dependencies.
 
 pdfSDK is our main doc services pdf
 fs is for file system stuff
+AdmZip is our zip library
 */
 const pdfSDK = require('@adobe/pdfservices-node-sdk');
 const fs = require('fs');
+const AdmZip = require('adm-zip');
+
 
 
 /*
 Defines our input and output, these would be dynamic normally...
 */
-const input = './pdfs/national_park.docx';
-const output = './pdfs/national_park.pdf';
+const input = './pdfs/adobe-document-services-security-overview.pdf';
+const output = './pdfs/extract-result.zip';
 
 /*
 ensure it actually exist...
@@ -40,20 +43,39 @@ const credentials =  pdfSDK.Credentials
 /*
 define top level objects for our work
 */
-const executionContext = pdfSDK.ExecutionContext.create(credentials),
-	createOperation = pdfSDK.CreatePDF.Operation.createNew();
+const options = new pdfSDK.ExtractPDF.options.ExtractPdfOptions.Builder()
+          .addElementsToExtract(pdfSDK.ExtractPDF.options.ExtractElementType.TEXT).build();
 
-/*
-tell the operation object where our input is
-*/
-const inputDoc = pdfSDK.FileRef.createFromLocalFile(input);
-createOperation.setInput(inputDoc);
+
+const executionContext = pdfSDK.ExecutionContext.create(credentials);
+
+const extractOperation = pdfSDK.ExtractPDF.Operation.createNew(),
+          inputPDF = pdfSDK.FileRef.createFromLocalFile(input,
+              pdfSDK.ExtractPDF.SupportedSourceFormat.pdf
+          );
+
+// Set operation input from a source file.
+extractOperation.setInput(inputPDF);
+
+// Set options
+extractOperation.setOptions(options);
 
 /*
 now do it!
 */
-createOperation.execute(executionContext)
+extractOperation.execute(executionContext)
 .then(result => result.saveAsFile(output))
+.then(() => {
+	console.log('Zip saved, now time to read from it and parse...');
+
+	let zip = new AdmZip(output);
+	let jsondata = zip.readAsText('structuredData.json');
+	let data = JSON.parse(jsondata);
+	data.elements.forEach(element => {
+		console.log(element.Text);
+	});
+
+})
 .catch(err => {
 	if(err instanceof pdfSDK.Error.ServiceApiError
 		|| err instanceof pdfSDK.Error.ServiceUsageError) {

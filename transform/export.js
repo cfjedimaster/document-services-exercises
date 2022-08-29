@@ -11,8 +11,8 @@ const fs = require('fs');
 /*
 Defines our input and output, these would be dynamic normally...
 */
-const input = './pdfs/national_park.docx';
-const output = './pdfs/national_park.pdf';
+const input = './pdfs/adobe-document-services-security-overview.pdf';
+const output = './pdfs/adobe-document-services-security-overview.docx';
 
 /*
 ensure it actually exist...
@@ -41,18 +41,18 @@ const credentials =  pdfSDK.Credentials
 define top level objects for our work
 */
 const executionContext = pdfSDK.ExecutionContext.create(credentials),
-	createOperation = pdfSDK.CreatePDF.Operation.createNew();
+	exportOperation = pdfSDK.ExportPDF.Operation.createNew(pdfSDK.ExportPDF.SupportedTargetFormats.DOCX);
 
 /*
 tell the operation object where our input is
 */
-const inputDoc = pdfSDK.FileRef.createFromLocalFile(input);
-createOperation.setInput(inputDoc);
+const inputPDF = pdfSDK.FileRef.createFromLocalFile(input);
+exportOperation.setInput(inputPDF);
 
 /*
 now do it!
 */
-createOperation.execute(executionContext)
+exportOperation.execute(executionContext)
 .then(result => result.saveAsFile(output))
 .catch(err => {
 	if(err instanceof pdfSDK.Error.ServiceApiError

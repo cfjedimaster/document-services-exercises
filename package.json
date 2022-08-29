@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/cfjedimaster/document-services-exercises#readme",
   "dependencies": {
-    "@adobe/pdfservices-node-sdk": "^2.2.3"
+    "@adobe/pdfservices-node-sdk": "^2.2.3",
+    "adm-zip": "^0.5.9"
   }
 }
